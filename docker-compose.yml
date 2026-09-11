@@ -1,0 +1,7 @@
+services:
+  bot:
+    image: ghcr.io/joshrandall8478/htn-discord-bot:latest
+    env_file:
+      - .env
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}

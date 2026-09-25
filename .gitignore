@@ -1,7 +1,7 @@
 # Built by nix-direnv when you cd in. Holds the GC root for this
 # project's dev shell.
 .direnv/
-
+.env
 # nix build output symlink.
 result
 result-*

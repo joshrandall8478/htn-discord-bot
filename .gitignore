@@ -2,6 +2,8 @@
 # project's dev shell.
 .direnv/
 .env
+
+.env.source
 # nix build output symlink.
 result
 result-*

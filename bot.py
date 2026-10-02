@@ -32,6 +32,15 @@ async def help_command(interaction: nextcord.Interaction):
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+@bot.slash_command(name="mentor", description="Creates a new ticket")
+async def mentor_create(interaction: nextcord.Interaction):
+    embed = nextcord.Embed(
+            title="Hack The Nest",
+            description="",
+            color=nextcord.Color.green(),
+        )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def main():
     parser =  argparse.ArgumentParser()

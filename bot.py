@@ -3,6 +3,7 @@ import nextcord
 import argparse
 from nextcord.ext import commands
 from nextcord import SlashOption
+import db
 
 
 class Bot(commands.Bot):
@@ -32,8 +33,8 @@ async def help_command(interaction: nextcord.Interaction):
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@bot.slash_command(name="mentor", description="Creates a new ticket")
-async def mentor_create(interaction: nextcord.Interaction):
+@bot.slash_command(name="ticket", description="Creates a new ticket")
+async def ticket_create(interaction: nextcord.Interaction):
     embed = nextcord.Embed(
             title="Hack The Nest",
             description="",

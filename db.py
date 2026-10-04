@@ -15,8 +15,11 @@ class Database:
                 CREATE TABLE IF NOT EXISTS config (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     guildId INTEGER NOT NULL,
-                    ticketCategoryId INTEGER,
-                    ticketRoleId INTEGER
+                    guildName TEXT NOT NULL,
+                    ticketCategoryId INTEGER NOT NULL,
+                    ticketCategoryName TEXT NOT NULL,
+                    ticketRoleId INTEGER NOT NULL,
+                    ticketRoleName TEXT NOT NULL
                 );
                 """
             )
@@ -36,6 +39,54 @@ class Database:
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
             self.conn.rollback()
+
+
+    def save_config(self, guildId, guildName, categoryId, categoryName, roldeId, roleName):
+                # Example:
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(
+                """
+                       INSERT INTO config (
+                guildId,
+                guildName,
+                ticketCategoryId,
+                ticketCategoryName,
+                ticketRoleId,
+                ticketRoleName
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                guildId, guildName, categoryId, categoryName, roldeId, roleName
+            ))
+            self.conn.commit()
+            print("Config for " + guildName + " created")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
+            self.conn.rollback()
+#
+        # cursor.execute(
+        #     """
+        #     INSERT INTO config (
+        #         guildId,
+        #         ticketCategory,
+        #         ticketRoleId,
+        #         ticketChannelId,
+        #         ticketMessage
+        #     )
+        #     VALUES (?, ?, ?, ?, ?)
+        #     """,
+        #     (
+        #         interaction.guild.id,
+        #         category.id,
+        #         role.id,
+        #         ticket_channel.id,
+        #         ticket_message
+        #     )
+        # )
+        #
+        # db.commit()
 
     def get_cursor(self):
         return self.conn.cursor()

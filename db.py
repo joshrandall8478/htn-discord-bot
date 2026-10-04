@@ -15,19 +15,24 @@ class Database:
                 CREATE TABLE IF NOT EXISTS config (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     guildId INTEGER NOT NULL,
-                    ticketCategory TEXT,
+                    ticketCategoryId INTEGER,
                     ticketRoleId INTEGER
                 );
-
+                """
+            )
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS tickets (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    guildId INTEGER NOT NULL,
                     channelId INTEGER NOT NULL,
+                    subject TEXT NOT NULL,
                     status TEXT NOT NULL CHECK (status IN ('resolved', 'open'))
                 );
                 """
             )
             self.conn.commit()
-            print("Tables created successfully.")
+            print("Tables created/checked successfully.")
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
             self.conn.rollback()

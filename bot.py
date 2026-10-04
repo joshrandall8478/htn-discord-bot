@@ -19,6 +19,8 @@ class Bot(commands.Bot):
 
 bot = Bot()
 
+db = db.Database()
+
 
 
 
@@ -42,8 +44,54 @@ async def ticket_create(interaction: nextcord.Interaction):
         )
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+class SetupModal(nextcord.ui.Modal):
+    def __init__(self):
+        super().__init__("Server Setup")
+        self.name = nextcord.ui.TextInput(label="Ticket Category Name", required=True, max_length=100)
+        self.add_item(self.name)
+
+    async def callback(self, interaction: nextcord.Interaction):
+        # validate + save to db here
+        view = ChannelPickView(self.name.value)
+        await interaction.response.send_message("Pick a channel:", view=view, ephemeral=True)
+
+class CategoryPickView(nextcord.ui.View):
+    def __init__(self, name: str):
+        super().__init__(timeout=120)
+        self.name = name
+
+    @nextcord.ui.channel_select(
+        placeholder="Choose a category",
+        channel_types=[nextcord.ChannelType.category],
+        min_values=1,
+        max_values=1,
+    )
+    async def pick(self, select: nextcord.ui.ChannelSelect, interaction: nextcord.Interaction):
+        category = select.values.channels[0]   # a partial channel object; has .id and .name
+        # save self.name + category.id to your db
+        await interaction.response.edit_message(
+            content=f"Using category **{category.name}**", view=None
+        )
+
+class ChannelPickView(nextcord.ui.View):
+    def __init__(self, name):
+        super().__init__(timeout=120)
+        self.name = name
+
+    @nextcord.ui.channel_select(placeholder="Announcement channel")
+    async def pick(self, select, interaction: nextcord.Interaction):
+        channel = select.values.channels[0]
+        # save self.name + channel.id to db
+        await interaction.response.edit_message(content="Setup complete!", view=None)
+
+@bot.slash_command(description="Configure the bot")
+async def setup(interaction: nextcord.Interaction):
+    await interaction.response.send_modal(SetupModal())
+
+
 
 def main():
+    db.init_db()
     parser =  argparse.ArgumentParser()
     parser.add_argument(
         "--token",

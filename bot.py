@@ -1,14 +1,15 @@
-import os
+import db
 import nextcord
-import argparse
+
 from nextcord.ext import commands
 from nextcord import SlashOption
-import db
 
+db = db.Database()
 
 # Bot class
 class Bot(commands.Bot):
     def __init__(self):
+        db.init_db()
         intents = nextcord.Intents.default()
         intents.members = True
         intents.guilds = True
@@ -18,11 +19,8 @@ class Bot(commands.Bot):
         print(f"Bot is ready! Logged in as {self.user}")
         print(f"Connected to {len(self.guilds)} guild(s)")
 
+
 bot = Bot()
-
-
-# Database call
-db = db.Database()
 
 
 
@@ -36,7 +34,6 @@ async def help_command(interaction: nextcord.Interaction):
     )
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
-
 
 # Ticket
 @bot.slash_command(name="ticket", description="Creates a new ticket")
@@ -539,27 +536,4 @@ async def setup(interaction: nextcord.Interaction):
     )
 
 
-# Main process
-def main():
-    db.init_db()
-    parser =  argparse.ArgumentParser()
-    parser.add_argument(
-        "--token",
-        type=str,
-        help="Discord bot token (can also be set via DISCORD_TOKEN environment variable)",
-    )
-    args = parser.parse_args()
-    if not os.getenv("DISCORD_TOKEN"):
-        token = args.token
-    else:
-        token = os.getenv("DISCORD_TOKEN")
-    if not token:
-        print("Error: DISCORD_TOKEN environment variable is not set, or --token argument not provided!")
-        print("Please set it in your .env file or environment.")
-        exit(1)
 
-    bot.run(token)
-
-
-if __name__ == "__main__":
-    main()
